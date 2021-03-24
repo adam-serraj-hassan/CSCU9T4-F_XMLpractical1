@@ -9,6 +9,8 @@ import javax.xml.transform.*;       // import DOM source classes
 
 //import com.sun.xml.internal.bind.marshaller.NioEscapeHandler;
 import org.w3c.dom.*;               // import DOM
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
   DOM handler to read XML information, to create this, and to print it.
@@ -37,7 +39,7 @@ public class DOMMenu {
 
     @param args         command-line arguments
   */
-  public static void main(String[] args)  {
+  public static void main(String[] args) throws SAXParseException {
     // load XML file into "document"
     loadDocument(args[0]);
 
@@ -78,7 +80,7 @@ public class DOMMenu {
    Validate the document given a schema file
    @param filename XSD file to read
   */
-  private static Boolean validateDocument(String filename)  {
+  private static Boolean validateDocument(String filename)  throws SAXParseException {
     try {
       String language = XMLConstants.W3C_XML_SCHEMA_NS_URI;
       SchemaFactory factory = SchemaFactory.newInstance(language);
@@ -86,9 +88,11 @@ public class DOMMenu {
       Validator validator = schema.newValidator();
       validator.validate(new DOMSource(document));
       return true;
-    } catch (Exception e){
-      System.err.println(e);
-      System.err.println("Could not load schema or validate");
+    } catch (SAXParseException | IOException e){
+      e.printStackTrace();
+      return false;
+    } catch (SAXException e) {
+      e.printStackTrace();
       return false;
     }
   }
