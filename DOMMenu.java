@@ -42,7 +42,7 @@ public class DOMMenu {
     loadDocument(args[0]);
 
     // validate XML file
-    boolean isValidated = validateDocument("small_menu.xsd");
+    boolean isValidated = validateDocument(args[1]);
 
     // print staff.xml using DOM methods and XPath queries
     printNodes();

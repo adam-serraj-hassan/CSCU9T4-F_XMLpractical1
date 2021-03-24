@@ -2,7 +2,7 @@
 <menu>
     <item category="starters">
         <name>Bread sticks</name>
-        <price>0.30</price>
+        <money>0.30</money>
         <description>Something to fill you up while you wait.</description>
     </item>
     <item category="starters">
