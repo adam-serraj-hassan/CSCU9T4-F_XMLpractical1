@@ -40,6 +40,10 @@ public class DOMMenu {
   public static void main(String[] args)  {
     // load XML file into "document"
     loadDocument(args[0]);
+
+    // validate XML file
+    boolean isValidated = validateDocument("small_menu.xsd");
+
     // print staff.xml using DOM methods and XPath queries
     printNodes();
   
