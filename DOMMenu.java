@@ -46,10 +46,10 @@ public class DOMMenu {
     // validate XML file
     boolean isValidated = validateDocument(args[1]);
 
-    // print staff.xml using DOM methods and XPath queries
-    printNodes();
-  
-   
+    // print small_menu.xml using DOM methods and XPath queries
+    if (isValidated)
+      printNodes();
+
   }
 
   /**
@@ -100,11 +100,16 @@ public class DOMMenu {
     Print nodes using DOM methods and XPath queries.
   */
   private static void printNodes() {
-    Node menuItem_1 = document.getFirstChild();
-    Node menuItem_2 = menuItem_1.getFirstChild().getNextSibling();
-    System.out.println("First child is: " + menuItem_1.getNodeName());
-    System.out.println("  Child is: " + menuItem_2.getNodeName());
-
+    NodeList list = document.getElementsByTagName("item");
+    NodeList nameList = document.getElementsByTagName("name");
+    NodeList priceList = document.getElementsByTagName("price");
+    NodeList descriptionList = document.getElementsByTagName("description");
+    // traverses all the lists according to the different tags and prints their contents
+    for (int i = 0; i < list.getLength(); i++) {
+      System.out.printf("%-10s%10s%45s", nameList.item(i).getTextContent(),
+              "£" + priceList.item(i).getTextContent(), descriptionList.item(i).getTextContent());
+      System.out.println();
+    }
   }
 
   /**
