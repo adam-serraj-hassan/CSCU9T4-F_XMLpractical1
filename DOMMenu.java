@@ -9,6 +9,8 @@ import javax.xml.transform.*;       // import DOM source classes
 
 //import com.sun.xml.internal.bind.marshaller.NioEscapeHandler;
 import org.w3c.dom.*;               // import DOM
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
   DOM handler to read XML information, to create this, and to print it.
@@ -37,13 +39,17 @@ public class DOMMenu {
 
     @param args         command-line arguments
   */
-  public static void main(String[] args)  {
+  public static void main(String[] args) throws SAXParseException {
     // load XML file into "document"
     loadDocument(args[0]);
-    // print staff.xml using DOM methods and XPath queries
-    printNodes();
-  
-   
+
+    // validate XML file
+    boolean isValidated = validateDocument(args[1]);
+
+    // print small_menu.xml using DOM methods and XPath queries
+    if (isValidated)
+      printNodes();
+
   }
 
   /**
@@ -74,7 +80,7 @@ public class DOMMenu {
    Validate the document given a schema file
    @param filename XSD file to read
   */
-  private static Boolean validateDocument(String filename)  {
+  private static Boolean validateDocument(String filename)  throws SAXParseException {
     try {
       String language = XMLConstants.W3C_XML_SCHEMA_NS_URI;
       SchemaFactory factory = SchemaFactory.newInstance(language);
@@ -82,9 +88,11 @@ public class DOMMenu {
       Validator validator = schema.newValidator();
       validator.validate(new DOMSource(document));
       return true;
-    } catch (Exception e){
-      System.err.println(e);
-      System.err.println("Could not load schema or validate");
+    } catch (SAXParseException | IOException e){
+      e.printStackTrace();
+      return false;
+    } catch (SAXException e) {
+      e.printStackTrace();
       return false;
     }
   }
@@ -92,11 +100,16 @@ public class DOMMenu {
     Print nodes using DOM methods and XPath queries.
   */
   private static void printNodes() {
-    Node menuItem_1 = document.getFirstChild();
-    Node menuItem_2 = menuItem_1.getFirstChild().getNextSibling();
-    System.out.println("First child is: " + menuItem_1.getNodeName());
-    System.out.println("  Child is: " + menuItem_2.getNodeName());
-
+    NodeList list = document.getElementsByTagName("item");
+    NodeList nameList = document.getElementsByTagName("name");
+    NodeList priceList = document.getElementsByTagName("price");
+    NodeList descriptionList = document.getElementsByTagName("description");
+    // traverses all the lists according to the different tags and prints their contents
+    for (int i = 0; i < list.getLength(); i++) {
+      System.out.printf("%-10s%10s%45s", nameList.item(i).getTextContent(),
+              "£" + priceList.item(i).getTextContent(), descriptionList.item(i).getTextContent());
+      System.out.println();
+    }
   }
 
   /**
